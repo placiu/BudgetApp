@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% include 'header.html.twig' %}
+    {% include 'navbar.html.twig' %}
+
+    <div class="slim-mainpanel">
+        <div class="container">
+            {% block mainpanel %}{% endblock %}
+            {% include 'alert.html.twig' %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    {% include 'footer.html.twig' %}
+
+{% endblock %}

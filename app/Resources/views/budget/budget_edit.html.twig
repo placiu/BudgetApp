@@ -1,0 +1,77 @@
+{% extends 'index.html.twig' %}
+
+{% block mainpanel %}
+    {% include 'budget/mainpanel.html.twig' %}
+{% endblock %}
+
+{% block content %}
+
+    <div id="form" class="section-wrapper">
+        <label class="section-title mg-b-40">Edit your budget for {{ monthName }} {{ year }}</label>
+
+        {% set i = 1 %}
+
+        <form method="post">
+
+        {% for budget in budgets %}
+
+            <input type="hidden" name="id[{{ i }}]" value="{{ budget.id }}">
+
+            <div class="form-layout form-layout-7 mg-b-20">
+                <div class="row no-gutters">
+                    <div class="col-5 col-sm-4">
+                        Name
+                    </div>
+                    <div class="col-7 col-sm-8">
+                        <input class="form-control" type="text" name="name[{{ budget.id }}]"  value="{{ budget.name }}">
+                    </div>
+                </div>
+                <div class="row no-gutters">
+                    <div class="col-5 col-sm-4">
+                        Value
+                    </div>
+                    <div class="col-7 col-sm-8">
+                        <input class="form-control" type="text" name="value[{{ budget.id }}]" value="{{ budget.value }}">
+                    </div>
+                </div>
+            </div>
+
+            {% set i = i + 1 %}
+
+        {% endfor %}
+
+    </div>
+
+    <div class="row mg-t-20">
+        <div class="col-12">
+            <form>
+                <input type="submit" name="update" class="btn btn-secondary btn-block bd-0" value="Done!">
+            </form>
+        </div>
+    </div>
+
+    </form>
+
+{% endblock %}
+
+{% block jasvascript %}
+
+    <script src="{{ asset('js/budget-form.js') }}"></script>
+
+    <script>
+
+        var month = {% if month is defined %} "{{ month }}"; {% endif %}
+        var year = {% if year is defined %} "{{ year }}"; {% endif %}
+
+        $(function() {
+
+            $('#link-budget').addClass('active');
+
+        });
+
+    </script>
+
+{% endblock %}
+
+
+

@@ -1,0 +1,41 @@
+{% extends 'index.html.twig' %}
+
+{% block mainpanel %}
+    {% include 'budget/mainpanel.html.twig' %}
+{% endblock %}
+
+{% block content %}
+
+    {% if contentType == 'form' %}
+        {% include 'budget/budget_form.html.twig' %}
+    {% else %}
+        {% include 'budget/budget_content.html.twig' %}
+    {% endif %}
+
+{% endblock %}
+
+{% block jasvascript %}
+
+    <script>
+
+        var month = {% if month is defined %} "{{ month }}"; {% endif %}
+        var year = {% if year is defined %} "{{ year }}"; {% endif %}
+
+        $(function() {
+
+            $('#link-budget').addClass('active');
+
+            $('#done').click(function() {
+                location.reload();
+            });
+
+        });
+
+    </script>
+
+    <script src="{{ asset('js/budget-form.js') }}"></script>
+    <script src="{{ asset('lib/chartist/js/chartist.js') }}"></script>
+    <script src="{{ asset('js/budget-piechart.js') }}"></script>
+
+
+{% endblock %}

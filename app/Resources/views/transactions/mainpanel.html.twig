@@ -1,0 +1,16 @@
+<div class="slim-pageheader">
+
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle mg-l-5" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa ion-ios-calendar-outline mg-r-5"></i> Choose month
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for date in userDates %}
+                <a class="dropdown-item" href="{{ path('transactions', {'year': date.year, 'month': date.month}) }}">{{ date.monthName }} {{ date.year }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <h6 class="slim-pagetitle">Transactions / {{ monthName }} {{ year }}</h6>
+</div>
+

@@ -1,0 +1,39 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<div class="d-md-flex flex-row-reverse">
+    <div class="signin-right">
+
+        <div class="signin-box signup">
+            <h3 class="signin-title-primary">Register new account!</h3>
+            <h5 class="signin-title-secondary lh-4">It's free to signup and only takes a minute.</h5>
+
+            {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+                <div class="form-group">
+                    {{ form_row(form.username, {'label': false, 'attr': {'class': 'form-control', 'placeholder': 'Login'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.email, {'label': false, 'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.plainPassword.first, {'label': false, 'attr': {'class': 'form-control', 'placeholder': 'Password'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_row(form.plainPassword.second, {'label': false, 'attr': {'class': 'form-control', 'placeholder': 'Repeat password'}}) }}
+                </div>
+
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary btn-block btn-signin" value="{{ 'registration.submit'|trans }}">
+            </div>
+
+            {{ form_end(form) }}
+
+            <p class="mg-t-40 mg-b-0">Already have an account? <a href="{{ path('fos_user_security_login') }}">Sign In</a></p>
+        </div><!-- signin-box -->
+
+    </div><!-- signin-right -->
+    <div class="signin-left">
+        <div class="signin-box">
+            <h2 class="slim-logo"><a href="{{ path('homepage') }}">budgetApp<span>.</span></a></h2>
+        </div>
+    </div><!-- signin-left -->
+</div><!-- d-flex -->

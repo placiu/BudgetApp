@@ -1,0 +1,147 @@
+
+
+
+        <div class="nav-statistics-wrapper">
+            <nav class="nav">
+                <a href="" class="nav-link active">This month expenses</a>
+            </nav>
+        </div><!-- nav-statistics-wrapper -->
+
+        <div class="row row-statistics mg-b-30">
+            <div class="col-12">
+                <canvas id="chartBar1" height="350"></canvas>
+            </div><!-- col-7 -->
+        </div><!-- row -->
+
+        <hr>
+
+        <div class="row row-xs">
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="card card-status">
+                    <div class="media">
+                        <i class="icon ion-ios-cloud-download-outline tx-purple"></i>
+                        <div class="media-body">
+                            <h1>{{ totalIncome }}</h1>
+                            <p>Total income</p>
+                        </div><!-- media-body -->
+                    </div><!-- media -->
+                </div><!-- card -->
+            </div><!-- col-3 -->
+
+            <div class="col-sm-6 col-lg-3 mg-t-10 mg-lg-t-0">
+                <div class="card card-status">
+                    <div class="media">
+                        <i class="icon ion-ios-cloud-upload-outline tx-primary"></i>
+                        <div class="media-body">
+                            <h1>{{ totalOutcome }}</h1>
+                            <p>Money spend</p>
+                        </div><!-- media-body -->
+                    </div><!-- media -->
+                </div><!-- card -->
+            </div><!-- col-3 -->
+
+            <div class="col-sm-6 col-lg-3 mg-t-10 mg-lg-t-0">
+                <div class="card card-status">
+                    <div class="media">
+                        <i class="icon ion-ios-analytics-outline tx-pink"></i>
+                        <div class="media-body">
+                            <h1>{{ totalIncome - totalOutcome }}</h1>
+                            <p>Balance</p>
+                        </div><!-- media-body -->
+                    </div><!-- media -->
+                </div><!-- card -->
+            </div><!-- col-3 -->
+
+            <div class="col-sm-6 col-lg-3 mg-t-10 mg-sm-t-0">
+                <div class="card card-status">
+                    <div class="media">
+                        <i class="icon ion-ios-bookmarks-outline tx-teal"></i>
+                        <div class="media-body">
+                            <h1>{{ totalTransactions }}</h1>
+                            <p>Transactions</p>
+                        </div><!-- media-body -->
+                    </div><!-- media -->
+                </div><!-- card -->
+            </div><!-- col-3 -->
+
+        </div><!-- row -->
+
+        <div class="nav-statistics-wrapper mg-t-20">
+            <nav class="nav">
+                <a href="" class="nav-link active">Last transactions</a>
+            </nav>
+        </div><!-- nav-statistics-wrapper -->
+
+        <div class="row row-xs mg-t-10">
+            <div class="col-lg-6">
+                <div class="card card-table">
+                    <div class="card-header">
+                        <h6 class="slim-card-title" style="color: red">Outcome History</h6>
+                    </div><!-- card-header -->
+                    <div class="table-responsive" style="min-height: 280px">
+                        <table class="table mg-b-0 tx-13">
+                            <thead>
+                                <tr class="tx-10">
+                                    <th class="pd-y-5 wd-20p">Date</th>
+                                    <th class="pd-y-5">Recipient</th>
+                                    <th class="pd-y-5 wd-20p">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for transaction in outcomeTransactions|slice(-5) %}
+
+                                    <tr>
+                                        <td class="pd-l-20">{{ transaction.date }}</td>
+                                        <td>{{ transaction.recipient }}</td>
+                                        <td><span style="color: red">{{ transaction.amount }}</span></td>
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                    <div class="card-footer tx-12 pd-y-15 bg-transparent">
+                        <a href="{{ path('transactions', {'year': year, 'month': month}) }}"><i class="fa fa-angle-down mg-r-5"></i>View All Transaction History</a>
+                    </div><!-- card-footer -->
+                </div><!-- card -->
+            </div><!-- col-6 -->
+
+            <div class="col-lg-6">
+                <div class="card card-table">
+                    <div class="card-header">
+                        <h6 class="slim-card-title" style="color: green">Income History</h6>
+                    </div><!-- card-header -->
+                    <div class="table-responsive" style="min-height: 280px">
+                        <table class="table mg-b-0 tx-13">
+                            <thead>
+                            <tr class="tx-10">
+                                <th class="pd-y-5 wd-20p">Date</th>
+                                <th class="pd-y-5">Recipient</th>
+                                <th class="pd-y-5 wd-20p">Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for transaction in incomeTransactions|slice(-5) %}
+
+                                <tr>
+                                    <td class="pd-l-20">{{ transaction.date }}</td>
+                                    <td>{{ transaction.recipient }}</td>
+                                    <td><span style="color: green">{{ transaction.amount }}</span></td>
+                                </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                    <div class="card-footer tx-12 pd-y-15 bg-transparent">
+                        <a href="{{ path('transactions', {'year': year, 'month': month}) }}"><i class="fa fa-angle-down mg-r-5"></i>View All Transaction History</a>
+                    </div><!-- card-footer -->
+                </div><!-- card -->
+            </div><!-- col-6 -->
+
+        </div><!-- row -->

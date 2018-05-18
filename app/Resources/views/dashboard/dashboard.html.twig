@@ -1,0 +1,153 @@
+{% extends 'index.html.twig' %}
+
+{% block mainpanel %}
+    {% include 'dashboard/mainpanel.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    {% include 'dashboard/dashboard_content.html.twig' %}
+{% endblock %}
+
+{% block jasvascript %}
+
+    {% set dates = [] %}
+    {% for date in userDates %}
+        {% set ym = [date.year, date.month] %}
+        {% set dates = dates|merge([ym]) %}
+    {% endfor %}
+
+    <script src="{{ asset('lib/chart.js/js/Chart.js') }}"></script>
+
+    <script>
+        $(function(){
+            'use strict';
+
+            $('#link-homepage').addClass('active');
+
+            $('.select2').select2({
+                minimumResultsForSearch: Infinity
+            });
+
+            var userDates = {{ dates|json_encode|raw }};
+            var months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var modalYear = $('#date_form_year');
+            var modalMonth = $('#date_form_month');
+            var modalMonthName = $('#create_month_form_monthName');
+            var yearOption = $('<option>', {'value': year});
+            var nextYearOption = $('<option>', {'value': year + 1});
+
+            yearOption.text(year);
+            nextYearOption.text(year + 1);
+
+            if(month === 12) {
+                yearOption.attr('disabled', 'disabled');
+            }
+
+            modalYear.append(yearOption).append(nextYearOption);
+
+            var selectedYear = modalYear.val();
+
+            generateMonthsOptions();
+            modalYear.change(function() {
+                selectedYear = $(this).val();
+                modalMonth.empty();
+                generateMonthsOptions();
+            });
+
+            function generateMonthsOptions() {
+                for(var i = 1; i <= 12; i++) {
+                    var monthOption = $('<option>', {'value': i});
+                    monthOption.text(months[i]);
+
+                    if (i < month && selectedYear == year || dateExists(selectedYear, i, userDates)) {
+                        monthOption.attr('disabled', 'disabled');
+                    }
+
+                    modalMonth.append(monthOption);
+                }
+            }
+
+            function dateExists(year, month, userDates) {
+                for(var i = 0; i < userDates.length; i++) {
+                    if(userDates[i][0] == year && userDates[i][1] == month) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+
+            var selectedMonth = modalMonth.val();
+            modalMonthName.val(months[selectedMonth]);
+            modalMonth.change(function() {
+                selectedMonth = $(this).val();
+                modalMonthName.val(months[selectedMonth]);
+            });
+
+        });
+    </script>
+
+    <script>
+
+        var workingMonth = {{ month }};
+        var data = {{ transactionsByDay|json_encode|raw }};
+
+        $(function(){
+            'use strict';
+
+            $('#link-homepage').addClass('active');
+
+            var daysInMonth = ['31', '29', '31', '30', '31', '30', '31', '31', '30', '31', '30', '31'];
+            var labels = [];
+            for(var x = 0; x < daysInMonth[workingMonth - 1]; x++) {
+                labels.push(x + 1);
+            }
+
+            console.log(labels);
+
+            var ctx1 = document.getElementById('chartBar1').getContext('2d');
+            var myChart1 = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Day\'s outcome',
+                        data: data,
+                        backgroundColor: '#27AAC8'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false,
+                        labels: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true,
+                                fontSize: 10,
+                                max: 1000
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                beginAtZero:true,
+                                fontSize: 11
+                            }
+                        }]
+                    }
+                }
+            });
+
+        });
+    </script>
+
+{% endblock %}

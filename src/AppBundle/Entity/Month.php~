@@ -1,0 +1,162 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Month
+ *
+ * @ORM\Table(name="month")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\MonthRepository")
+ */
+class Month
+{
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="months")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $user;
+
+    /**
+     * @ORM\OneToMany(targetEntity="HistoryFile", mappedBy="month")
+     */
+    private $historyFiles;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="year", type="integer")
+     */
+    private $year;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="month", type="integer")
+     */
+    private $month;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="monthName", type="string", length=255)
+     */
+    private $monthName;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set year
+     *
+     * @param integer $year
+     *
+     * @return Month
+     */
+    public function setYear($year)
+    {
+        $this->year = $year;
+
+        return $this;
+    }
+
+    /**
+     * Get year
+     *
+     * @return int
+     */
+    public function getYear()
+    {
+        return $this->year;
+    }
+
+    /**
+     * Set month
+     *
+     * @param integer $month
+     *
+     * @return Month
+     */
+    public function setMonth($month)
+    {
+        $this->month = $month;
+
+        return $this;
+    }
+
+    /**
+     * Get month
+     *
+     * @return int
+     */
+    public function getMonth()
+    {
+        return $this->month;
+    }
+
+    /**
+     * Set monthName
+     *
+     * @param string $monthName
+     *
+     * @return Month
+     */
+    public function setMonthName($monthName)
+    {
+        $this->monthName = $monthName;
+
+        return $this;
+    }
+
+    /**
+     * Get monthName
+     *
+     * @return string
+     */
+    public function getMonthName()
+    {
+        return $this->monthName;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Month
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+}

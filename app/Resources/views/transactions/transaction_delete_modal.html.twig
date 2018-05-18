@@ -1,0 +1,22 @@
+<div id="modaldelete-{{ id }}" class="modal fade effect-sign">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content tx-size-sm">
+            <div class="modal-header pd-x-20">
+                <h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">Delete transaction</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pd-20">
+                <p class="mg-b-5">You are about to delete transaction.<br> <strong>Please confirm!</strong></p>
+            </div>
+            <div class="modal-footer">
+                <form action="" method="post">
+                    <input type="hidden" name="transactionId" value="{{ id }}">
+                    <input type="submit" name="delete" class="btn btn-primary" value="Delete">
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+{% extends 'transactions/transactions.html.twig' %}
+
+{% block content %}
+
+    <div id="form" class="section-wrapper">
+        <label class="section-title">File parser</label>
+        <p class="mg-b-20 mg-sm-b-40">Add transaction from file: <small><strong>{{ file }}</strong></small></p>
+
+        <form action="{{ path('transactionsparsed', {'year': year, 'month': month}) }}" method="post">
+            <div id="form-layout" class="form-layout form-layout-2"></div>
+            <div id="form-submit" class="row form-layout-footer">
+                <div class="col-8"></div>
+                <div class="col-2">
+                    <input type="submit" name="parse" value="Submit" class="btn btn-primary bd-0 btn-block"></form>
+                </div>
+                <div class="col-2">
+                    <form action="{{ path('transactions', {'year': year, 'month': month}) }}" method="post">
+                        <input type="submit" class="btn btn-secondary btn-block" value="Cancel">
+                    </form>
+                </div>
+            </div><!-- form-layout-footer -->
+
+    </div><!-- section-wrapper -->
+
+
+{% endblock %}
+
+{% block jasvascript %}
+
+    <script>
+
+        var year = "{{ year }}";
+        var month = "{{ month }}";
+        var dates = [];
+        var types = [];
+        var recipients = [];
+        var amounts = [];
+        var budgets = [];
+
+        {% for date in dates %} dates.push("{{ date }}"); {% endfor %}
+        {% for type in types %} types.push("{{ type }}"); {% endfor %}
+        {% for recipient in recipients %} recipients.push("{{ recipient }}"); {% endfor %}
+        {% for amount in amounts %} amounts.push({{ amount }}); {% endfor %}
+        {% for budget in budgets %} budgets.push("{{ budget }}"); {% endfor %}
+
+        $(function(){
+            'use strict';
+
+            $('.select2').select2({
+                minimumResultsForSearch: Infinity
+            });
+
+            $('#link-transactions').addClass('active');
+
+        });
+    </script>
+
+    <script src="{{ asset('js/transaction-parser-form.js') }}"></script>
+    <script src="{{ asset('lib/select2/js/select2.min.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% if error %}
+    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% endif %}
+
+<div class="d-md-flex flex-row-reverse">
+    <div class="signin-right">
+
+        <div class="signin-box">
+            <h2 class="signin-title-primary">Welcome back!</h2>
+            <h3 class="signin-title-secondary">Sign in to continue.</h3>
+
+            <form action="{{ path("fos_user_security_check") }}" method="post">
+                {% if csrf_token %}
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                {% endif %}
+
+                <div class="form-group">
+                    <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" required="required" placeholder="{{ 'security.login.username'|trans }}">
+                </div><!-- form-group -->
+                <div class="form-group mg-b-50">
+                    <input type="password" class="form-control" id="password" name="_password" required="required" placeholder="{{ 'security.login.password'|trans }}">
+                </div><!-- form-group -->
+                <button class="btn btn-primary btn-block btn-signin" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}">Sign In</button>
+            </form>
+            <p class="mg-b-0">Don't have an account? <a href="{{ path('fos_user_registration_register') }}">Sign Up</a></p>
+        </div>
+
+    </div><!-- signin-right -->
+    <div class="signin-left">
+        <div class="signin-box">
+            <h2 class="slim-logo"><a href="{{ path('homepage') }}">budgetApp<span>.</span></a></h2>
+        </div>
+    </div><!-- signin-left -->
+</div><!-- d-flex -->
+
