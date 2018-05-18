@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  *  @Security("has_role('ROLE_USER')")
@@ -17,23 +18,54 @@ use Symfony\Component\HttpFoundation\Request;
 class FileController extends Controller
 {
     /**
-     * @Route("/filemanager", name="filemanagermain")
+     * @Route("/fileManager/{year}/{month}/{monthName}", name="fileManager")
      */
-    public function fileManagerMainAction()
+    public function fileManagerAction(Session $session, $year, $month, $monthName)
     {
-        $date = $this->getDoctrine()->getRepository(Date::class)->findOneBy(['user' => $this->getUser()], ['year' => 'ASC', 'month' => 'ASC']);
-        return $this->redirectToRoute('filemanager', ['year' => $date->getYear(), 'month' => $date->getMonth()]);
+        $session->set('chosenDate', ['year' => $year, 'month' => $month, 'monthName' => $monthName]);
+        return $this->redirectToRoute('fileManagerMain');
     }
 
     /**
-     * @Route("/{year}/{month}/filemanager", name="filemanager")
+     * @Route("/fileManager", name="fileManagerMain")
      */
-    public function fileManagerAction(Request $request, $year, $month)
+    public function fileManagerMainAction(Session $session)
     {
-        $dateRepo = $this->getDoctrine()->getRepository(Date::class);
-        $workingDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $year, 'month' => $month]);
+        $sessionDate = $session->get('chosenDate');
 
-        $userDates = $dateRepo->findBy(['user' => $this->getUser()], ['year' => 'DESC', 'month' => 'ASC'], 12);
+        $dateRepo = $this->getDoctrine()->getRepository(Date::class);
+        $fileRepo = $this->getDoctrine()->getRepository(File::class);
+
+        $chosenDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $sessionDate['year'], 'month' => $sessionDate['month']]);
+        $userDates = $this->getUser()->getDates();
+        $files = $fileRepo->findBy(['user' => $this->getUser(), 'date' => $chosenDate ], ['added' => 'DESC']);
+
+        $upload = $this->createForm(UploadForm::class, new File($this->getUser()));
+
+        $alert = $session->get('filemanager-alert');
+        $session->remove('filemanager-alert');
+        if (!$alert) $alert = null;
+
+        return $this->render('filemanager/filemanager.html.twig', [
+            'year' => $sessionDate['year'],
+            'month' => $sessionDate['month'],
+            'monthName' => $sessionDate['monthName'],
+            'upload' => $upload->createView(),
+            'files' => $files,
+            'months' => $userDates,
+            'alert' => $alert
+        ]);
+    }
+
+    /**
+     * @Route("/fileManager/upload", name="fileManagerUpload", methods={"post"})
+     */
+    public function fileManagerUploadAction(Request $request, Session $session)
+    {
+        $sessionDate = $session->get('chosenDate');
+
+        $dateRepo = $this->getDoctrine()->getRepository(Date::class);
+        $chosenDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $sessionDate['year'], 'month' => $sessionDate['month']]);
 
         $upload = $this->createForm(UploadForm::class, new File($this->getUser()));
         $upload->handleRequest($request);
@@ -42,36 +74,32 @@ class FileController extends Controller
             $date = new \DateTime('now');
             $historyFile = $upload->getData();
             $historyFile->setAdded($date);
-            $historyFile->setDate($workingDate);
+            $historyFile->setDate($chosenDate);
             $em = $this->getDoctrine()->getManager();
             $em->persist($historyFile);
             $em->flush();
 
-            return $this->redirectToRoute('filemanager', ['year' => $year, 'month' => $month]);
+            $session->set('filemanager-alert', ['info', 'New file uploaded!']);
         }
 
-        $files = $this->getDoctrine()->getRepository(File::class)->findBy(['user' => $this->getUser(), 'date' => $workingDate ], ['added' => 'DESC']);
-
-        return $this->render('filemanager/filemanager.html.twig', [
-            'year' => $year,
-            'month' => $month,
-            'upload' => $upload->createView(),
-            'files' => $files,
-            'months' => $userDates
-        ]);
+        return $this->redirectToRoute('fileManagerMain');
     }
 
     /**
-     * @Route("/{year}/{month}/filemanager/delete", name="deleteHistoryFile")
+     * @Route("/fileManager/delete", name="fileManagerDelete")
      */
-    public function deleteFileAction(Request $request, $year, $month)
+    public function fileManagerDeleteAction(Request $request, Session $session)
     {
         $file = $this->getDoctrine()->getRepository(File::class)->findOneBy(['id' => $request->get('file_id')]);
-        if($file) {
+
+        if ($file) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($file);
             $em->flush();
+
+            $session->set('filemanager-alert', ['info', 'File deleted!']);
         }
-        return $this->redirectToRoute('filemanager', ['year' => $year, 'month' => $month]);
+
+        return $this->redirectToRoute('fileManagerMain');
     }
 }

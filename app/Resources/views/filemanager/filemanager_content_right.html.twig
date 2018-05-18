@@ -1,5 +1,6 @@
 <div class="manager-right">
-    {% if files is defined and files is not null %}
+
+    {% if files is defined and files is not empty %}
 
         {% set dates = [] %}
 
@@ -20,7 +21,7 @@
                                         <a href="file:///Users/pawel/Workspace/files{{ file.file }}">{{ file.file }}</a>
                                     </div><!-- col-6 -->
 
-                                    <div class="col-2 mg-t-5 mg-sm-t-0 text-right">{% if file.parsed == 'yes' %}<i class="tx-26 fa ion-ios-checkmark-outline" style="color: green"></i>{% endif %}</div>
+                                    <div class="col-2 mg-t-5 mg-sm-t-0 text-right">{% if file.parsed == true %}<i class="tx-26 fa ion-ios-checkmark-outline" style="color: green"></i>{% endif %}</div>
                                     <div class="col-2 mg-t-5 mg-sm-t-0 text-right">{{ file.added|date("H:i") }}</div>
                                     <div class="col-1 tx-right mg-t-5 mg-sm-t-0">
 
@@ -39,7 +40,7 @@
                                                             <strong>Please confirm!</strong></p>
                                                     </div>
                                                     <div class="modal-footer justify-content-center">
-                                                        <form action="{{ path('deleteHistoryFile', {'year': year, 'month': month}) }}" method="post">
+                                                        <form action="{{ path('fileManagerDelete') }}" method="post">
                                                             <input type="hidden" name="file_id" value="{{ file.id }}">
                                                             <input type="submit" name="submit" class="btn btn-primary" value="Delete">
                                                         </form>
@@ -58,5 +59,19 @@
                 </div>
             {% endif %}
         {% endfor %}
+    {% else %}
+
+        <div class="modal d-block pos-static">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="background-color: transparent">
+                    <div class="modal-body tx-center pd-y-20 pd-x-20">
+                        <i class="icon icon ion-ios-close-outline tx-100 lh-1 mg-t-20 d-inline-block"></i>
+                        <h4 class="mg-b-20">No files uploaded for this month!</h4>
+
+                    </div><!-- modal-body -->
+                </div><!-- modal-content -->
+            </div><!-- modal-dialog -->
+        </div><!-- modal -->
+
     {% endif %}
 </div><!-- manager-right -->

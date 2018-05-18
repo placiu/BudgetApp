@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  *  @Security("has_role('ROLE_USER')")
@@ -16,29 +17,27 @@ use Symfony\Component\HttpFoundation\Request;
 class DashboardController extends Controller
 {
     /**
-     * @Route("/dashboard", name="dashboardmain")
+     * @Route("/dashboard/{year}/{month}/{monthName}", name="dashboard")
      */
-    public function dashboardMainAction()
+    public function dashboardAction(Session $session, $year, $month, $monthName)
     {
-        $date = $this->getDoctrine()->getRepository(Date::class)->findOneBy(['user' => $this->getUser()], ['year' => 'ASC', 'month' => 'ASC']);
-        return $this->redirectToRoute('dashboard', ['year' => $date->getYear(), 'month' => $date->getMonth()]);
+        $session->set('chosenDate', ['year' => $year, 'month' => $month, 'monthName' => $monthName]);
+        return $this->redirectToRoute('dashboardMain');
     }
 
     /**
-     * @Route("/{year}/{month}/dashboard", name="dashboard")
+     * @Route("/dashboard", name="dashboardMain")
      */
-    public function dashboardAction(Request $request, $year, $month)
+    public function dashboardMainAction(Session $session)
     {
-        $alert = [];
+        $sessionDate = $session->get('chosenDate');
 
         $dateRepo = $this->getDoctrine()->getRepository(Date::class);
         $transactionRepo = $this->getDoctrine()->getRepository(Transaction::class);
 
         $userDates = $this->getUser()->getDates();
-        $workingDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $year, 'month' => $month]);
-        $workingMonthName = $workingDate->getMonthName();
-
-        $transactions = $transactionRepo->findBy(['user' => $this->getUser(), 'workingDate' => $workingDate], ['date' => 'ASC']);
+        $chosenDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $sessionDate['year'], 'month' => $sessionDate['month']]);
+        $transactions = $transactionRepo->findBy(['user' => $this->getUser(), 'workingDate' => $chosenDate], ['date' => 'ASC']);
 
         $totalIncome = 0;
         $totalOutcome = 0;
@@ -56,8 +55,11 @@ class DashboardController extends Controller
             }
         }
 
+        $outcomeTransactions = array_reverse($outcomeTransactions);
+        $incomeTransactions = array_reverse($incomeTransactions);
+
         $transactionsByDay = [];
-        for ($x = 0; $x < cal_days_in_month(CAL_GREGORIAN, $month, $year); $x++) {
+        for ($x = 0; $x < cal_days_in_month(CAL_GREGORIAN, $sessionDate['month'], $sessionDate['year']); $x++) {
             $transactionsByDay[$x] = 0;
             foreach ($transactions as $transaction) {
                 $transactionDate = $transaction->getDate();
@@ -70,10 +72,41 @@ class DashboardController extends Controller
         }
 
         $newDateForm = $this->createForm(DateForm::class, new Date());
+
+        $alert = $session->get('alert');
+        $session->remove('alert');
+        if (!$alert) $alert = null;
+
+        return $this->render('dashboard/dashboard.html.twig', [
+            'year' => $sessionDate['year'],
+            'month' => $sessionDate['month'],
+            'monthName' => $sessionDate['monthName'],
+            'userDates' => $userDates,
+            'incomeTransactions' => $incomeTransactions,
+            'outcomeTransactions' => $outcomeTransactions,
+            'totalTransactions' => count($transactions),
+            'totalOutcome' => abs(round($totalOutcome)),
+            'totalIncome' => round($totalIncome),
+            'transactionsByDay' => $transactionsByDay,
+            'newDateForm' => $newDateForm->createView(),
+            'alert' => $alert,
+        ]);
+    }
+
+    /**
+     * @Route("/dashboard/new-date", name="dashboardnewdate", methods={"post"})
+     */
+    public function dashboardNewDateAction(Request $request, Session $session)
+    {
+        $session->set('alert', ['danger', 'Error!']);
+        $dateRepo = $this->getDoctrine()->getRepository(Date::class);
+
+        $newDateForm = $this->createForm(DateForm::class, new Date());
         $newDateForm->handleRequest($request);
 
         if ($newDateForm->isSubmitted()) {
             $newMonth = $newDateForm->getData();
+
             if (!$dateRepo->findBy(['year' => $newMonth->getYear(), 'month' => $newMonth->getMonth()])) {
                 $newMonth->setUser($this->getUser());
                 $newMonthNumber = \DateTime::createFromFormat('m', $newMonth->getMonth());
@@ -83,28 +116,15 @@ class DashboardController extends Controller
                 $em->persist($newMonth);
                 $em->flush();
 
-                $dateRepo = $this->getDoctrine()->getManager()->getRepository(Date::class);
-                $userDates = $dateRepo->findBy(['user' => $this->getUser()]);
+                $session->set('alert', ['info', 'New date created!']);
 
-                $alert = ['info', 'New month created!'];
             } else {
-                $alert = ['danger', 'This date already exists!'];
+                $session->set('alert', ['danger', 'This date already exists!']);
             }
         }
 
-        return $this->render('dashboard/dashboard.html.twig', [
-            'year' => $year,
-            'month' => $month,
-            'monthName' => $workingMonthName,
-            'userDates' => $userDates,
-            'totalOutcome' => abs(round($totalOutcome)),
-            'totalIncome' => round($totalIncome),
-            'incomeTransactions' => $incomeTransactions,
-            'outcomeTransactions' => $outcomeTransactions,
-            'transactionsByDay' => $transactionsByDay,
-            'totalTransactions' => count($transactions),
-            'newDateForm' => $newDateForm->createView(),
-            'alert' => $alert,
-        ]);
+        return $this->redirectToRoute('dashboardMain');
+
     }
+
 }

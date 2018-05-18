@@ -5,12 +5,12 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             {% for date in userDates %}
-                <a class="dropdown-item" href="{{ path('budget', {'year': date.year, 'month': date.month}) }}">{{ date.monthName }} {{ date.year }}</a>
+                <a class="dropdown-item" href="{{ path('budget', {'year': date.year, 'month': date.month, 'monthName': date.monthName}) }}">{{ date.monthName }} {{ date.year }}</a>
             {% endfor %}
         </div>
     </div>
 
-    <form action="{{ path('budgetedit', {'year': year, 'month': month}) }}" class="mg-l-auto"><button type="submit" class="btn btn-secondary mg-l-auto wd-100">Edit</button></form>
+    <form action="{{ path('budgetEditGet') }}" class="mg-l-auto"><button type="submit" class="btn btn-secondary mg-l-auto wd-100">Edit</button></form>
 
     <h6 class="slim-pagetitle">Budget / {{ monthName }} {{ year }}</h6>
 </div>

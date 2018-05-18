@@ -24,7 +24,7 @@
                         </div>
 
                         <div class="modal-body pd-25">
-                            {{ form_start(upload) }}
+                            {{ form_start(upload, {'action': path('fileManagerUpload'), 'method': 'post'}) }}
                             <div class="col mg-t-20">
                                 <div class="custom-file">
                                     {{ form_row(upload.file, {'label': 'Choose file', 'label_attr': {'class': 'custom-file-label'}, 'attr': {'class': 'custom-file-input'}}) }}
@@ -44,7 +44,7 @@
             <nav class="nav">
 
                 {% for month in months %}
-                    <a href="{{ path('filemanager', {'year': month.year, 'month': month.month}) }}" class="nav-link active">
+                    <a href="{{ path('fileManager', {'year': month.year, 'month': month.month, 'monthName': month.monthName}) }}" class="nav-link active">
                         <span>{{ month.monthName }} {{ month.year }}</span>
                     </a>
                 {% endfor %}

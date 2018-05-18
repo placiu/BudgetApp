@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  *  @Security("has_role('ROLE_USER')")
@@ -16,34 +17,34 @@ use Symfony\Component\HttpFoundation\Request;
 class BudgetController extends Controller
 {
     /**
-     * @Route("/budget", name="budgetmain")
+     * @Route("/budget/{year}/{month}/{monthName}", name="budget")
      */
-    public function budgetMainAction()
+    public function budgetAction(Session $session, $year, $month, $monthName)
     {
-        $date = $this->getDoctrine()->getRepository(Date::class)->findOneBy(['user' => $this->getUser()], ['year' => 'ASC', 'month' => 'ASC']);
-        return $this->redirectToRoute('budget', ['year' => $date->getYear(), 'month' => $date->getMonth()]);
+        $session->set('chosenDate', ['year' => $year, 'month' => $month, 'monthName' => $monthName]);
+        return $this->redirectToRoute('budgetMain');
     }
 
     /**
-     * @Route("/{year}/{month}/budget", name="budget")
+     * @Route("/budget", name="budgetMain")
      */
-    public function budgetAction(Request $request, $year, $month)
+    public function budgetMainAction(Session $session)
     {
+        $sessionDate = $session->get('chosenDate');
+
         $dateRepo = $this->getDoctrine()->getRepository(Date::class);
-
-        $userDates = $dateRepo->findBy(['user' => $this->getUser()]);
-        $currentDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $year, 'month' => $month]);
-        $currentMonthName = $currentDate->getMonthName();
-
         $budgetRepo = $this->getDoctrine()->getRepository(Budget::class);
-        $budgetsCollection = $budgetRepo->findBy(['date' => $currentDate]);
-
         $transactionRepo = $this->getDoctrine()->getRepository(Transaction::class);
+
+        $userDates = $this->getUser()->getDates();
+        $chosenDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $sessionDate['year'], 'month' => $sessionDate['month']]);
+
+        $budgetsCollection = $budgetRepo->findBy(['date' => $chosenDate]);
 
         $budgets = [];
 
         if ($budgetsCollection) {
-
+            $content = 'budget';
             $budgetsSum = 0;
 
             foreach ($budgetsCollection as $budgetObject) {
@@ -64,19 +65,20 @@ class BudgetController extends Controller
                 $budgets[] = ['budget' => $budgetObject, 'share' => $share, 'totalOutcome' => $totalOutcome, 'budgetTransactions' => $budgetTransactions, 'totalTransactions' => $totalTransactions];
             }
 
-            $content = 'budget';
-            $alert = '';
-
         } else {
             $content = 'form';
-            $alert = ['info', 'No budgets created for this month!'];
+            $session->set('budget-alert', ['info', 'No budgets created for this month!']);
         }
+
+        $alert = $session->get('budget-alert');
+        $session->remove('budget-alert');
+        if (!$alert) $alert = null;
 
         return $this->render('budget/budget.html.twig', [
             'active' => true,
-            'year' => $year,
-            'month' => $month,
-            'monthName' => $currentMonthName,
+            'year' => $sessionDate['year'],
+            'month' => $sessionDate['month'],
+            'monthName' => $sessionDate['monthName'],
             'contentType' => $content,
             'alert' => $alert,
             'userDates' => $userDates,
@@ -85,42 +87,46 @@ class BudgetController extends Controller
     }
 
     /**
-     * @Route("/{year}/{month}/budget/edit", name="budgetedit", methods={"GET"})
+     * @Route("/budget/edit", name="budgetEditGet", methods={"GET"})
      */
-    public function budgetEditAction(Request $request, $year, $month)
+    public function budgetEditAction(Session $session)
     {
+        $sessionDate = $session->get('chosenDate');
+
         $dateRepo = $this->getDoctrine()->getRepository(Date::class);
-
-        $userDates = $dateRepo->findBy(['user' => $this->getUser()]);
-        $currentDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $year, 'month' => $month]);
-        $currentMonthName = $currentDate->getMonthName();
-
         $budgetRepo = $this->getDoctrine()->getRepository(Budget::class);
-        $budgetsCollection = $budgetRepo->findBy(['date' => $currentDate]);
+
+        $userDates = $this->getUser()->getDates();
+        $chosenDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $sessionDate['year'], 'month' => $sessionDate['month']]);
+
+        $budgetsCollection = $budgetRepo->findBy(['date' => $chosenDate]);
 
         return $this->render('budget/budget_edit.html.twig', [
             'active' => true,
-            'year' => $year,
-            'month' => $month,
-            'monthName' => $currentMonthName,
+            'year' => $sessionDate['year'],
+            'month' => $sessionDate['month'],
+            'monthName' => $sessionDate['monthName'],
             'userDates' => $userDates,
             'budgets' => $budgetsCollection
         ]);
     }
 
     /**
-     * @Route("/{year}/{month}/budget/edit", name="budgeteditpost", methods={"POST"})
+     * @Route("/budget/edit", name="budgetEditPost", methods={"POST"})
      */
-    public function budgetEditPostAction(Request $request, $year, $month)
+    public function budgetEditPostAction(Request $request, Session $session)
     {
         if ($request->get('update')) {
             $budgets = $this->getDoctrine()->getRepository(Budget::class);
+
             $ids = $request->get('id');
             $names = $request->get('name');
             $values = $request->get('value');
+
             foreach ($ids as $id) {
                 $em = $this->getDoctrine()->getManager();
                 $budget = $budgets->find($id);
+
                 if ($names[$id] === '' || $values[$id] === '') {
                     $em->remove($budget);
                     $em->flush();
@@ -131,9 +137,11 @@ class BudgetController extends Controller
                     $em->flush();
                 }
             }
+
+            $session->set('budget-alert', ['info', 'Budgets updated!']);
         }
 
-        return $this->redirectToRoute('budget', ['year' => $year, 'month' => $month]);
+        return $this->redirectToRoute('budgetMain');
     }
 
 }

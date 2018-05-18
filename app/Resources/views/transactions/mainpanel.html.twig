@@ -6,7 +6,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             {% for date in userDates %}
-                <a class="dropdown-item" href="{{ path('transactions', {'year': date.year, 'month': date.month}) }}">{{ date.monthName }} {{ date.year }}</a>
+                <a class="dropdown-item" href="{{ path('transactions', {'year': date.year, 'month': date.month, 'monthName': date.monthName}) }}">{{ date.monthName }} {{ date.year }}</a>
             {% endfor %}
         </div>
     </div>

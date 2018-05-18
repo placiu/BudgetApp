@@ -90,7 +90,7 @@
                             </thead>
                             <tbody>
 
-                                {% for transaction in outcomeTransactions|slice(-5) %}
+                                {% for transaction in outcomeTransactions|slice(0, 5) %}
 
                                     <tr>
                                         <td class="pd-l-20">{{ transaction.date }}</td>
@@ -104,7 +104,7 @@
                         </table>
                     </div><!-- table-responsive -->
                     <div class="card-footer tx-12 pd-y-15 bg-transparent">
-                        <a href="{{ path('transactions', {'year': year, 'month': month}) }}"><i class="fa fa-angle-down mg-r-5"></i>View All Transaction History</a>
+                        <a href="{{ path('transactionsMain') }}"><i class="fa fa-angle-down mg-r-5"></i>View All Transaction History</a>
                     </div><!-- card-footer -->
                 </div><!-- card -->
             </div><!-- col-6 -->
@@ -125,7 +125,7 @@
                             </thead>
                             <tbody>
 
-                            {% for transaction in incomeTransactions|slice(-5) %}
+                            {% for transaction in incomeTransactions|slice(0, 5) %}
 
                                 <tr>
                                     <td class="pd-l-20">{{ transaction.date }}</td>
@@ -139,7 +139,7 @@
                         </table>
                     </div><!-- table-responsive -->
                     <div class="card-footer tx-12 pd-y-15 bg-transparent">
-                        <a href="{{ path('transactions', {'year': year, 'month': month}) }}"><i class="fa fa-angle-down mg-r-5"></i>View All Transaction History</a>
+                        <a href="{{ path('transactionsMain') }}"><i class="fa fa-angle-down mg-r-5"></i>View All Transaction History</a>
                     </div><!-- card-footer -->
                 </div><!-- card -->
             </div><!-- col-6 -->

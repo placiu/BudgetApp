@@ -12,7 +12,7 @@
                 <h5 class="card-title tx-dark tx-medium mg-b-40">Budgets overview</h5>
 
                 {% for budget in budgets %}
-                    <label class="mg-b-5">{{ budget.budget.name }}</label>
+                    <label class="mg-b-5">{{ budget.budget.name }} <small>({{ (budget.totalOutcome / budget.budget.value * 100)|round }}%)</small></label>
                     <div class="progress mg-b-15">
                         <div class="progress-bar progress-bar-xs" style="width: {{ budget.totalOutcome / budget.budget.value * 100 }}%" role="progressbar"></div>
                     </div>

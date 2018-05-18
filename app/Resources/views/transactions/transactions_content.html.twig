@@ -10,8 +10,8 @@
 
                 <div class="col d-flex align-items-center justify-content-center">
                     <div class="wd-250" style="margin-top: 73px">
-                        <form action="{{ path('transactionsparser', {'year': year, 'month': month}) }}" method="post">
-                            <select id="select6" name="id" class="form-control" data-placeholder="Choose one" onchange="this.form.submit()">
+                        <form action="{{ path('transactionsParser') }}" method="post">
+                            <select id="select6" name="fileId" class="form-control" data-placeholder="Choose one" onchange="this.form.submit()">
                                 <option label="Choose file"></option>
 
                                 {% for file in files %}
@@ -35,7 +35,7 @@
 
                     <div class="form-layout form-layout-6 mg-t-20">
 
-                        <form action="" method="post">
+                        <form action="{{ path('transactionsAddCash') }}" method="post">
 
                             <div class="row no-gutters">
                                 <div class="col-5 col-sm-4">
@@ -88,7 +88,7 @@
                                 </div><!-- col-8 -->
                             </div><!-- row -->
 
-                            <input type="submit" name="addcash" value="Add cash transaction" class="btn btn-primary btn-block mg-t-18">
+                            <input type="submit" name="addCash" value="Add cash transaction" class="btn btn-primary btn-block mg-t-18">
 
                         </form>
 

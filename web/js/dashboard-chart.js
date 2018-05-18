@@ -35,7 +35,7 @@ $(function(){
                     ticks: {
                         beginAtZero:true,
                         fontSize: 10,
-                        max: 1000
+                        max: 500
                     }
                 }],
                 xAxes: [{

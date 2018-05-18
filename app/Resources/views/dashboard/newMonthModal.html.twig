@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body pd-20">
                 <p class="mg-b-20 mg-sm-b-40">To create new worksheet, choose month.</p>
-                {{ form_start(newDateForm) }}
+                {{ form_start(newDateForm, {'action': path('dashboardnewdate'), 'method': 'post'}) }}
 
                 <div class="form-layout form-layout-5">
                     <div class="row">

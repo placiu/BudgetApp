@@ -11,7 +11,7 @@
 
         {% set i = 1 %}
 
-        <form method="post">
+        <form action="{{ path('budgetEditPost') }}" method="post">
 
         {% for budget in budgets %}
 

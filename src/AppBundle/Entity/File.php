@@ -3,7 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -41,6 +41,8 @@ class File
      * @var string
      *
      * @ORM\Column(name="file", type="string")
+     * @Assert\File(mimeTypes={ "text/html" })
+     *
      */
     private $file;
 

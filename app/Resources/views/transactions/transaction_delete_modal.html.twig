@@ -11,7 +11,7 @@
                 <p class="mg-b-5">You are about to delete transaction.<br> <strong>Please confirm!</strong></p>
             </div>
             <div class="modal-footer">
-                <form action="" method="post">
+                <form action="{{ path('transactionsDelete') }}" method="post">
                     <input type="hidden" name="transactionId" value="{{ id }}">
                     <input type="submit" name="delete" class="btn btn-primary" value="Delete">
                 </form>

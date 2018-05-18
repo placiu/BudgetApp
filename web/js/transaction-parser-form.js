@@ -5,10 +5,14 @@ $(function(){
 
     var descriptions = [];
 
+    console.log(year);
+    console.log(month);
+
     for(var x = 0; x < amounts.length; x++) {
         var dateCheck = dates[x];
         dateCheck = dateCheck.replace("-0", "-");
         dateCheck = dateCheck.substr(0, 6);
+
         var workingDate = year+'-'+month;
 
         if(dateCheck == workingDate) {
@@ -111,7 +115,5 @@ $(function(){
         }
 
     }
-
-
 
 });
