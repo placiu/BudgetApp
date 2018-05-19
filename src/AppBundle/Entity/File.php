@@ -92,7 +92,7 @@ class File
             $date = date('Y-m-d__H:i:s');
             /** @var UploadedFile $file */
             $fileName = $date . '__' . $this->getUser()->getId() . '.' . $file->guessExtension();
-            $file->move(self::FILE_PATH, $fileName);
+            $file->move('files', $fileName);
             $this->file = $fileName;
             return $this;
         }
