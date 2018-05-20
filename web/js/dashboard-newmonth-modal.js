@@ -7,8 +7,6 @@ $(function(){
         minimumResultsForSearch: Infinity
     });
 
-    console.log(userDates)
-
     var months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July',
         'August', 'September', 'October', 'November', 'December'];
 
@@ -60,6 +58,7 @@ $(function(){
         }
         return false;
     }
+
 
     var selectedMonth = modalMonth.val();
     modalMonthName.val(months[selectedMonth]);

@@ -210,18 +210,12 @@ class TransactionsController extends Controller
             $budgets[] = $dateBudget->getName();
         }
 
-//        dump($dates);
-//        dump($types);
-//        dump($recipients);
-//        dump($amounts);
-//        dump($budgets);exit;
-
         return $this->render('transactions/transaction_parser.html.twig', [
             'year' => $sessionDate['year'],
             'month' => $sessionDate['month'],
             'monthName' => $sessionDate['monthName'],
             'userDates' => $userDates,
-            'file' => $file->getFile(),
+            'file' => $file,
             'dates' => $dates,
             'types' => $types,
             'recipients' => $recipients,
@@ -241,6 +235,7 @@ class TransactionsController extends Controller
             $dateRepo = $this->getDoctrine()->getRepository(Date::class);
             $budgetRepo = $this->getDoctrine()->getRepository(Budget::class);
             $transactionRepo = $this->getDoctrine()->getRepository(Transaction::class);
+            $fileRepo = $this->getDoctrine()->getRepository(File::class);
 
             $chosenDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $sessionDate['year'], 'month' => $sessionDate['month']]);
 
@@ -276,8 +271,14 @@ class TransactionsController extends Controller
                     $em->flush();
 
                     $session->set('transaction-alert', ['info', 'Transactions added!']);
+
                 }
             }
+
+            $file = $fileRepo->find($request->get('fileId'));
+            $file->setParsed('yes');
+            $em->persist($file);
+            $em->flush();
 
         }
 

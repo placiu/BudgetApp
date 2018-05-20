@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class File
 {
-    CONST FILE_PATH = '/Users/pawel/Workspace/files';
+    CONST FILE_PATH = 'files';
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="files")
@@ -41,8 +42,13 @@ class File
      * @var string
      *
      * @ORM\Column(name="file", type="string")
-     * @Assert\File(mimeTypes={ "text/html" })
      *
+     *
+     * @Assert\File(
+     *     maxSize = "100k",
+     *     mimeTypes = {"text/html"},
+     *     mimeTypesMessage = "Please upload a valid HTML file"
+     * )
      */
     private $file;
 
@@ -88,14 +94,15 @@ class File
      */
     public function setFile($file)
     {
-        if($file !== null) {
-            $date = date('Y-m-d__H:i:s');
-            /** @var UploadedFile $file */
-            $fileName = $date . '__' . $this->getUser()->getId() . '.' . $file->guessExtension();
-            $file->move('files', $fileName);
-            $this->file = $fileName;
-            return $this;
-        }
+        /** @var UploadedFile $file */
+//        if ($file !== null) {
+//            $date = date('Y-m-d__H:i:s');
+//            $fileName = $date . '__' . $this->getUser()->getId() . '.' . $file->guessExtension();
+//            $file->move(self::FILE_PATH, $fileName);
+//            $this->file = $fileName;
+//            return $this;
+//        }
+
         $this->file = $file;
 
         return $this;

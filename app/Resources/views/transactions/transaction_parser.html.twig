@@ -4,13 +4,14 @@
 
     <div id="form" class="section-wrapper">
         <label class="section-title">File parser</label>
-        <p class="mg-b-20 mg-sm-b-40">Add transaction from file: <small><strong>{{ file }}</strong></small></p>
+        <p class="mg-b-20 mg-sm-b-40">Add transaction from file: <small><strong>{{ file.file }}</strong></small></p>
 
         <form action="{{ path('transactionsParsed') }}" method="post">
             <div id="form-layout" class="form-layout form-layout-2"></div>
             <div id="form-submit" class="row form-layout-footer">
                 <div class="col-8"></div>
                 <div class="col-2">
+                    <input type="hidden" name="fileId" value="{{ file.id }}">
                     <input type="submit" name="parse" value="Submit" class="btn btn-primary bd-0 btn-block"></form>
                 </div>
                 <div class="col-2">
@@ -18,9 +19,9 @@
                         <input type="submit" class="btn btn-secondary btn-block" value="Cancel">
                     </form>
                 </div>
-            </div><!-- form-layout-footer -->
+            </div>
 
-    </div><!-- section-wrapper -->
+    </div>
 
 
 {% endblock %}
@@ -56,6 +57,5 @@
     </script>
 
     <script src="{{ asset('js/transaction-parser-form.js') }}"></script>
-    <script src="{{ asset('lib/select2/js/select2.min.js') }}"></script>
 
 {% endblock %}

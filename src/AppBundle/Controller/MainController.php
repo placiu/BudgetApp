@@ -3,9 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Date;
+use AppBundle\Entity\File;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\Tests\Compiler\D;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
@@ -18,7 +20,9 @@ class MainController extends Controller
      */
     public function indexAction(Session $session)
     {
-        if (!$session->get('chosenDate')) {
+        $userSession = $session->get('chosenDate');
+
+        if (!$userSession || $userSession['user'] !== $this->getUser()->getId()) {
             $currentDate = new \DateTime('now');
             $currentYear = $currentDate->format('Y');
             $currentMonth = $currentDate->format('n');
@@ -44,13 +48,30 @@ class MainController extends Controller
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($newDate);
+
+                // for demo -- demofile1
+                $demoFile1 = new File($this->getUser());
+                $demoFile1->setDate($newDate);
+                $demoFile1->setUser($this->getUser());
+                $demoFile1->setAdded(new \DateTime('now'));
+                $demoFile1->setFile('demofile1.html');
+                $em->persist($demoFile1);
+
+                // for demo -- demofile2
+                $demoFile2 = new File($this->getUser());
+                $demoFile2->setDate($newDate);
+                $demoFile2->setUser($this->getUser());
+                $demoFile2->setAdded(new \DateTime('now'));
+                $demoFile2->setFile('demofile2.html');
+                $em->persist($demoFile2);
+
                 $em->flush();
 
-                $session->set('chosenDate', ['year' => $currentYear, 'month' => $currentMonth, 'monthName' => $dateMonthName]);
+                $session->set('chosenDate', ['user' => $this->getUser()->getId(), 'year' => $currentYear, 'month' => $currentMonth, 'monthName' => $dateMonthName]);
                 return $this->redirectToRoute('dashboardMain');
             }
 
-            $session->set('chosenDate', ['year' => $workingDate->getYear(), 'month' => $workingDate->getMonth(), 'monthName' => $workingDate->getMonthName()]);
+            $session->set('chosenDate', ['user' => $this->getUser()->getId(), 'year' => $workingDate->getYear(), 'month' => $workingDate->getMonth(), 'monthName' => $workingDate->getMonthName()]);
             return $this->redirectToRoute('dashboardMain');
 
         }

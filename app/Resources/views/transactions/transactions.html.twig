@@ -1,7 +1,7 @@
 {% extends 'index.html.twig' %}
 
 {% block mainpanel %}
-    {% include 'transactions/mainpanel.html.twig' %}
+    {% include 'transactions/transactions_mainpanel.html.twig' %}
 {% endblock %}
 
 {% block content %}
@@ -12,8 +12,6 @@
 
     <script src="{{ asset('lib/datatables/js/jquery.dataTables.js') }}"></script>
     <script src="{{ asset('lib/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <script src="{{ asset('lib/select2/js/select2.min.js') }}"></script>
-    <script src="{{ asset('lib/moment/js/moment.js') }}"></script>
     <script src="{{ asset('lib/jquery-ui/js/jquery-ui.js') }}"></script>
 
     <script>
@@ -29,12 +27,12 @@
             });
 
             $('.select2').select2({
-                minimumResultsForSearch: Infinity,
+                minimumResultsForSearch: Infinity
             });
 
             $('#select6').select2({
                 containerCssClass: 'select2-full-color select2-primary',
-                minimumResultsForSearch: Infinity // disabling search
+                minimumResultsForSearch: Infinity
             });
 
             $('.fc-datepicker').datepicker({
@@ -44,6 +42,5 @@
 
         });
     </script>
-
 
 {% endblock %}

@@ -46,7 +46,7 @@
         </div>
     </div>
 
-</div><!-- row -->
+</div>
 
 <div class="nav-statistics-wrapper mg-t-20">
     <nav class="nav">
@@ -59,11 +59,13 @@
 
     <div id="accordion" class="accordion-one" role="tablist" aria-multiselectable="true">
         <div class="card mg-b-20">
+
             <div class="card-header" role="tab" id="headingThree">
                 <a class="collapsed tx-gray-800 transition" data-toggle="collapse" data-parent="#accordion" href="#collapseThree{{ i }}" aria-expanded="false" aria-controls="collapseThree">
                     <h5 class="card-title tx-dark tx-medium mg-b-0"><i class="fa fa-sliders mg-l-20 mg-r-20"></i>{{ budget.budget.name }}</h5>
                 </a>
             </div>
+
             <div id="collapseThree{{ i }}" class="collapse" role="tabpanel" aria-labelledby="headingThree">
                 <div class="card-body">
 
@@ -148,13 +150,12 @@
 
                             </tbody>
                         </table>
-                    </div><!-- bd -->
-
+                    </div>
 
                 </div>
-            </div><!-- collapse -->
-        </div><!-- card -->
-    </div><!-- accordion -->
+            </div>
+        </div>
+    </div>
 
     {% set i = i + 1 %}
 

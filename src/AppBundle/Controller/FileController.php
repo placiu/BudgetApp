@@ -72,11 +72,11 @@ class FileController extends Controller
 
         if ($upload->isSubmitted()) {
             $date = new \DateTime('now');
-            $historyFile = $upload->getData();
-            $historyFile->setAdded($date);
-            $historyFile->setDate($chosenDate);
+            $uploadFile = $upload->getData();
+            $uploadFile->setAdded($date);
+            $uploadFile->setDate($chosenDate);
             $em = $this->getDoctrine()->getManager();
-            $em->persist($historyFile);
+            $em->persist($uploadFile);
             $em->flush();
 
             $session->set('filemanager-alert', ['info', 'New file uploaded!']);
@@ -96,7 +96,7 @@ class FileController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($file);
             $em->flush();
-
+            unlink(File::FILE_PATH . '/' . $file->getFile());
             $session->set('filemanager-alert', ['info', 'File deleted!']);
         }
 
