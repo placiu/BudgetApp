@@ -22,7 +22,7 @@ class MainController extends Controller
     {
         $userSession = $session->get('chosenDate');
 
-        if (!$userSession || $userSession['user'] !== $this->getUser()->getId()) {
+        if ($userSession == null || $userSession['user'] != $this->getUser()->getId()) {
             $currentDate = new \DateTime('now');
             $currentYear = $currentDate->format('Y');
             $currentMonth = $currentDate->format('n');
@@ -34,10 +34,13 @@ class MainController extends Controller
                 'month' => $currentMonth
             ]);
 
+
+
             if (!$workingDate) {
                 $workingDate = $this->getDoctrine()->getRepository(Date::class)->findOneBy(['user' => $this->getUser()],
                     ['year' => 'ASC', 'month' => 'ASC']);
             }
+
 
             if (!$workingDate) {
                 $newDate = new Date();
@@ -48,23 +51,6 @@ class MainController extends Controller
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($newDate);
-
-                // for demo -- demofile1
-                $demoFile1 = new File($this->getUser());
-                $demoFile1->setDate($newDate);
-                $demoFile1->setUser($this->getUser());
-                $demoFile1->setAdded(new \DateTime('now'));
-                $demoFile1->setFile('demofile1.html');
-                $em->persist($demoFile1);
-
-                // for demo -- demofile2
-                $demoFile2 = new File($this->getUser());
-                $demoFile2->setDate($newDate);
-                $demoFile2->setUser($this->getUser());
-                $demoFile2->setAdded(new \DateTime('now'));
-                $demoFile2->setFile('demofile2.html');
-                $em->persist($demoFile2);
-
                 $em->flush();
 
                 $session->set('chosenDate', ['user' => $this->getUser()->getId(), 'year' => $currentYear, 'month' => $currentMonth, 'monthName' => $dateMonthName]);

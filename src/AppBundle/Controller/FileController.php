@@ -86,6 +86,47 @@ class FileController extends Controller
     }
 
     /**
+     * @Route("/fileManager/upload/demo", name="fileManagerUploadDemo")
+     */
+    public function fileManagerUploadDemoAction(Request $request, Session $session)
+    {
+        $sessionDate = $session->get('chosenDate');
+
+        $dateRepo = $this->getDoctrine()->getRepository(Date::class);
+        $fileRepo = $this->getDoctrine()->getRepository(File::class);
+
+        $chosenDate = $dateRepo->findOneBy(['user' => $this->getUser(), 'year' => $sessionDate['year'], 'month' => $sessionDate['month']]);
+
+        $em = $this->getDoctrine()->getManager();
+
+        // for demo -- demofile1
+        $demoFile1 = new File($this->getUser());
+        $demoFile1->setDate($chosenDate);
+        $demoFile1->setUser($this->getUser());
+        $demoFile1->setAdded(new \DateTime('now'));
+        $demoFile1->setFile('demofile1.html');
+
+        // for demo -- demofile2
+        $demoFile2 = new File($this->getUser());
+        $demoFile2->setDate($chosenDate);
+        $demoFile2->setUser($this->getUser());
+        $demoFile2->setAdded(new \DateTime('now'));
+        $demoFile2->setFile('demofile2.html');
+
+        if ($demoFile1Exists = $fileRepo->findOneBy(['file' => 'demofile1.html']) == null || $demoFile2Exists = $fileRepo->findOneBy(['file' => 'demofile2.html']) == null) {
+            $em->persist($demoFile1);
+            $em->persist($demoFile2);
+            $em->flush();
+            $session->set('filemanager-alert', ['info', 'Demo files uploaded']);
+        } else {
+            $session->set('filemanager-alert', ['danger', 'Demo files already exists!']);
+        }
+
+
+        return $this->redirectToRoute('fileManagerMain');
+    }
+
+    /**
      * @Route("/fileManager/delete", name="fileManagerDelete")
      */
     public function fileManagerDeleteAction(Request $request, Session $session)
@@ -96,10 +137,11 @@ class FileController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($file);
             $em->flush();
-            unlink(File::FILE_PATH . '/' . $file->getFile());
+            //unlink(File::FILE_PATH . '/' . $file->getFile());
             $session->set('filemanager-alert', ['info', 'File deleted!']);
         }
 
         return $this->redirectToRoute('fileManagerMain');
     }
+
 }
