@@ -21,3 +21,5 @@ Implementuje następujące funkcjonalności:
 </ul>
 
 <h3>Screenshots</h3>
+
+<img src="http://serwer1845889.home.pl/git_screenshots/budgetapp-01.png" />
