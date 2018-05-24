@@ -1,6 +1,7 @@
 <h2>Budgetapp</h2>
 
 <a href="http://budgetapp.pl" target="_blank">budgetapp.pl</a>
+(rejestracja lub login: demo password: demo)
 
 Warsztat końcowy kursu back-end developer PHP szkoły Coders Lab.
 
