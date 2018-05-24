@@ -22,7 +22,10 @@ Implementuje następujące funkcjonalności:
 
 <h3>Screenshots</h3>
 
-<center><img src="https://serwer1845889.home.pl/git_screenshots/budgetapp-01.png" /></center>
-<center><img src="https://serwer1845889.home.pl/git_screenshots/budgetapp-02.png" /></center>
-<center><img src="https://serwer1845889.home.pl/git_screenshots/budgetapp-03.png" /></center>
-<center><img src="https://serwer1845889.home.pl/git_screenshots/budgetapp-04.png" /></center>
+<img alt="Dashboard" src="https://serwer1845889.home.pl/git_screenshots/budgetapp-01.png" width="750"/>
+<hr />
+<img alt="Budgets" src="https://serwer1845889.home.pl/git_screenshots/budgetapp-02.png" width="750" />
+<hr />
+<img alt="Transactions" src="https://serwer1845889.home.pl/git_screenshots/budgetapp-03.png" width="750" />
+<hr />
+<img alt="File Manager" src="https://serwer1845889.home.pl/git_screenshots/budgetapp-04.png" width="750" />
