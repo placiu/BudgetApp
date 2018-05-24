@@ -15,7 +15,7 @@ Implementuje następujące funkcjonalności:
   <li>Tworzenie i edycja budżetów dla każdego utworzonego miesiąca</li>
   <li>Ręczne dodawanie transakcji gotówkowych</li>
   <li>Edycja i usuwanie wszystkich transakcji</li>
-  <li>Generowanie statystyk</li>
+  <li>Generowanie statystyk i wykresów</li>
 </ul>
 
 <h3>Screenshots</h3>
