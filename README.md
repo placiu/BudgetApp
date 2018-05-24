@@ -1,6 +1,6 @@
 <h2>Budgetapp</h2>
 
-<a href="budgetapp.pl">budgetapp.pl</a>
+<a href="http://budgetapp.pl">budgetapp.pl</a>
 
 Warsztat końcowy kursu back-end developer PHP szkoły Coders Lab.
 
