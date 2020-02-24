@@ -1,8 +1,5 @@
 <h2>Budgetapp</h2>
 
-<a href="http://budgetapp.pl" target="_blank">budgetapp.pl</a>
-(register or login: demo password: demo)
-
 Final workshop of back-end developer: PHP course at Coders Lab.
 
 <h3>Home budget management application.</h3>
